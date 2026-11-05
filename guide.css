@@ -567,4 +567,4 @@
   /* End champion links */
 
   /* Light theme accents, AA on small text */
-  :root[data-theme="light"]{--accent:#2560bd}
+  :root[data-theme="light"]{--accent:#2560bd;--accent-2:#b53a72}
