@@ -625,7 +625,7 @@ function renderBoard() {
   }).join("");
   $("#mtCount").textContent = `${MATCHUPS.length} matchups`;
 }
-const tipBullets = t => `<ul>${String(t).split(/(?<=[.!?])\s+(?=[A-Z])/).map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
+const tipBullets = t => `<ul>${String(t).replace(/([.!?])\s+(?=[A-Z])/g, "$1\n").split("\n").map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
 function openMatchup(m) {
   history.replaceState(null, "", "#" + normName(m.champion));
   const storm = m.keystone === "Stormraider's Surge" && STORM_PLAN;
@@ -669,7 +669,12 @@ $("#mtDrawer")?.addEventListener("close", () => history.replaceState(null, "", l
 $("#mtSearch")?.addEventListener("input", e => {
   const hits = new Set(findMatchups(e.target.value).map(m => normName(m.champion)));
   const q = e.target.value.trim();
-  document.querySelectorAll(".mt-tile").forEach(t => t.classList.toggle("dim", !!q && !hits.has(t.dataset.c)));
+  document.querySelectorAll(".mt-tile").forEach(t => {
+    const dim = !!q && !hits.has(t.dataset.c);
+    t.classList.toggle("dim", dim);
+    t.tabIndex = dim ? -1 : 0;
+    t.setAttribute("aria-hidden", dim);
+  });
   $("#mtCount").textContent = q ? `${hits.size} of ${MATCHUPS.length} matchups` : `${MATCHUPS.length} matchups`;
 });
 $("#mtSearch")?.addEventListener("keydown", e => {
